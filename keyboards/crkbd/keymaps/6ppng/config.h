@@ -1,8 +1,7 @@
 /*
-This is the c configuration file for the keymap
-
-Copyright 2012 Jun Wako <wakojun@gmail.com>
-Copyright 2015 Jack Humbert
+Copyright 2019 @foostan
+Copyright 2020 Drashna Jaelre <@drashna>
+Copyright 2021 6ppng <@6ppng>
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -31,16 +30,14 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #define USE_SERIAL_PD2
 
 #define TAPPING_FORCE_HOLD
-#define TAPPING_TERM 100
+#define TAPPING_TERM 200
 
-#ifdef RGBLIGHT_ENABLE
-    #undef RGBLED_NUM
-    #define RGBLIGHT_ANIMATIONS
-    #define RGBLED_NUM 27
-    #define RGBLIGHT_LIMIT_VAL 120
-    #define RGBLIGHT_HUE_STEP 10
-    #define RGBLIGHT_SAT_STEP 17
-    #define RGBLIGHT_VAL_STEP 17
-#endif
-
-#define OLED_FONT_H "keyboards/crkbd/lib/glcdfont.c"
+/* Mouse speed */
+#define MOUSEKEY_DELAY 1
+#define MOUSEKEY_INTERVAL 16
+#define MOUSEKEY_MAX_SPEED 4
+#define MOUSEKEY_TIME_TO_MAX 15
+#define MOUSEKEY_WHEEL_DELAY 1
+#define MOUSEKEY_WHEEL_INTERVAL 16
+#define MOUSEKEY_WHEEL_MAX_SPEED 1
+#define MOUSEKEY_WHEEL_TIME_TO_MAX 30
