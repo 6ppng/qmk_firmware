@@ -15,7 +15,6 @@
  */
 
 #include "quantum.h"
-#include "magic.h"
 
 #ifdef BLUETOOTH_ENABLE
 #    include "outputselect.h"
@@ -57,7 +56,7 @@ uint8_t extract_mod_bits(uint16_t code) {
 
     uint8_t mods_to_send = 0;
 
-    if (code & QK_RMODS_MIN) {  // Right mod flag is set
+    if (code & QK_RMODS_MIN) { // Right mod flag is set
         if (code & QK_LCTL) mods_to_send |= MOD_BIT(KC_RIGHT_CTRL);
         if (code & QK_LSFT) mods_to_send |= MOD_BIT(KC_RIGHT_SHIFT);
         if (code & QK_LALT) mods_to_send |= MOD_BIT(KC_RIGHT_ALT);
@@ -72,7 +71,9 @@ uint8_t extract_mod_bits(uint16_t code) {
     return mods_to_send;
 }
 
-void do_code16(uint16_t code, void (*f)(uint8_t)) { f(extract_mod_bits(code)); }
+void do_code16(uint16_t code, void (*f)(uint8_t)) {
+    f(extract_mod_bits(code));
+}
 
 __attribute__((weak)) void register_code16(uint16_t code) {
     if (IS_MOD(code) || code == KC_NO) {
@@ -94,19 +95,29 @@ __attribute__((weak)) void unregister_code16(uint16_t code) {
 
 __attribute__((weak)) void tap_code16(uint16_t code) {
     register_code16(code);
-#if TAP_CODE_DELAY > 0
-    wait_ms(TAP_CODE_DELAY);
-#endif
+    if (code == KC_CAPS_LOCK) {
+        wait_ms(TAP_HOLD_CAPS_DELAY);
+    } else if (TAP_CODE_DELAY > 0) {
+        wait_ms(TAP_CODE_DELAY);
+    }
     unregister_code16(code);
 }
 
-__attribute__((weak)) bool process_action_kb(keyrecord_t *record) { return true; }
+__attribute__((weak)) bool process_action_kb(keyrecord_t *record) {
+    return true;
+}
 
-__attribute__((weak)) bool process_record_kb(uint16_t keycode, keyrecord_t *record) { return process_record_user(keycode, record); }
+__attribute__((weak)) bool process_record_kb(uint16_t keycode, keyrecord_t *record) {
+    return process_record_user(keycode, record);
+}
 
-__attribute__((weak)) bool process_record_user(uint16_t keycode, keyrecord_t *record) { return true; }
+__attribute__((weak)) bool process_record_user(uint16_t keycode, keyrecord_t *record) {
+    return true;
+}
 
-__attribute__((weak)) void post_process_record_kb(uint16_t keycode, keyrecord_t *record) { post_process_record_user(keycode, record); }
+__attribute__((weak)) void post_process_record_kb(uint16_t keycode, keyrecord_t *record) {
+    post_process_record_user(keycode, record);
+}
 
 __attribute__((weak)) void post_process_record_user(uint16_t keycode, keyrecord_t *record) {}
 
@@ -122,7 +133,8 @@ void reset_keyboard(void) {
     uint16_t timer_start = timer_read();
     PLAY_SONG(goodbye_song);
     shutdown_user();
-    while (timer_elapsed(timer_start) < 250) wait_ms(1);
+    while (timer_elapsed(timer_start) < 250)
+        wait_ms(1);
     stop_all_notes();
 #else
     shutdown_user();
@@ -177,7 +189,7 @@ bool pre_process_record_quantum(keyrecord_t *record) {
             true)) {
         return false;
     }
-    return true;  // continue processing
+    return true; // continue processing
 }
 
 /* Get keycode, and then call keyboard function */
@@ -366,38 +378,17 @@ layer_state_t update_tri_layer_state(layer_state_t state, uint8_t layer1, uint8_
     return (state & mask12) == mask12 ? (state | mask3) : (state & ~mask3);
 }
 
-void update_tri_layer(uint8_t layer1, uint8_t layer2, uint8_t layer3) { layer_state_set(update_tri_layer_state(layer_state, layer1, layer2, layer3)); }
-
-void matrix_init_quantum() {
-    magic();
-    led_init_ports();
-#ifdef BACKLIGHT_ENABLE
-    backlight_init_ports();
-#endif
-#ifdef AUDIO_ENABLE
-    audio_init();
-#endif
-#ifdef LED_MATRIX_ENABLE
-    led_matrix_init();
-#endif
-#ifdef RGB_MATRIX_ENABLE
-    rgb_matrix_init();
-#endif
-#if defined(UNICODE_COMMON_ENABLE)
-    unicode_input_mode_init();
-#endif
-#ifdef HAPTIC_ENABLE
-    haptic_init();
-#endif
-#if defined(BLUETOOTH_ENABLE) && defined(OUTPUT_AUTO_ENABLE)
-    set_output(OUTPUT_AUTO);
-#endif
-
-    matrix_init_kb();
+void update_tri_layer(uint8_t layer1, uint8_t layer2, uint8_t layer3) {
+    layer_state_set(update_tri_layer_state(layer_state, layer1, layer2, layer3));
 }
 
 // TODO: remove legacy api
-void matrix_scan_quantum() { matrix_scan_kb(); }
+void matrix_init_quantum() {
+    matrix_init_kb();
+}
+void matrix_scan_quantum() {
+    matrix_scan_kb();
+}
 
 //------------------------------------------------------------------------------
 // Override these functions in your keymap file to play different tunes on
@@ -407,18 +398,8 @@ __attribute__((weak)) void startup_user() {}
 
 __attribute__((weak)) void shutdown_user() {}
 
-/** \brief Run keyboard level Power down
- *
- * FIXME: needs doc
- */
-__attribute__((weak)) void suspend_power_down_user(void) {}
-/** \brief Run keyboard level Power down
- *
- * FIXME: needs doc
- */
-__attribute__((weak)) void suspend_power_down_kb(void) { suspend_power_down_user(); }
-
 void suspend_power_down_quantum(void) {
+    suspend_power_down_kb();
 #ifndef NO_SUSPEND_POWER_DOWN
 // Turn off backlight
 #    ifdef BACKLIGHT_ENABLE
@@ -433,14 +414,7 @@ void suspend_power_down_quantum(void) {
 #    endif
 
     // Turn off LED indicators
-    uint8_t leds_off = 0;
-#    if defined(BACKLIGHT_CAPS_LOCK) && defined(BACKLIGHT_ENABLE)
-    if (is_backlight_enabled()) {
-        // Don't try to turn off Caps Lock indicator as it is backlight and backlight is already off
-        leds_off |= (1 << USB_LED_CAPS_LOCK);
-    }
-#    endif
-    led_set(leds_off);
+    led_suspend();
 
 // Turn off audio
 #    ifdef AUDIO_ENABLE
@@ -472,18 +446,6 @@ void suspend_power_down_quantum(void) {
 #endif
 }
 
-/** \brief run user level code immediately after wakeup
- *
- * FIXME: needs doc
- */
-__attribute__((weak)) void suspend_wakeup_init_user(void) {}
-
-/** \brief run keyboard level code immediately after wakeup
- *
- * FIXME: needs doc
- */
-__attribute__((weak)) void suspend_wakeup_init_kb(void) { suspend_wakeup_init_user(); }
-
 __attribute__((weak)) void suspend_wakeup_init_quantum(void) {
 // Turn on backlight
 #ifdef BACKLIGHT_ENABLE
@@ -491,7 +453,7 @@ __attribute__((weak)) void suspend_wakeup_init_quantum(void) {
 #endif
 
     // Restore LED indicators
-    led_set(host_keyboard_leds());
+    led_wakeup();
 
 // Wake up underglow
 #if defined(RGBLIGHT_SLEEP) && defined(RGBLIGHT_ENABLE)
