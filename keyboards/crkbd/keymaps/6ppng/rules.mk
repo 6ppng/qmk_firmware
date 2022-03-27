@@ -1,3 +1,2 @@
-OLED_ENABLE = no
-RGBLIGHT_ENABLE = no
-OLED_DRIVER = SSD1306
+MOUSEKEY_ENABLE = yes    # Mouse keys
+LTO_ENABLE      = yes

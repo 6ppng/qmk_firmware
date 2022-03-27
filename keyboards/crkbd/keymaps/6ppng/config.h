@@ -1,7 +1,7 @@
 /*
 Copyright 2019 @foostan
 Copyright 2020 Drashna Jaelre <@drashna>
-Copyright 2021 6ppng <@6ppng>
+Copyright 2022 6ppng <@6ppng>
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -19,25 +19,21 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 #pragma once
 
-//#define USE_MATRIX_I2C
-
 /* Select hand configuration */
+// #define MASTER_LEFT
+#define MASTER_RIGHT
 
-#define MASTER_LEFT
-// #define MASTER_RIGHT
-// #define EE_HANDS
-
-#define USE_SERIAL_PD2
-
+/* Tapping settings */
 #define RETRO_TAPPING
 #define TAPPING_TERM 100
 
 /* Mouse speed */
-#define MOUSEKEY_DELAY 1
+#define MOUSEKEY_DELAY 10
 #define MOUSEKEY_INTERVAL 16
-#define MOUSEKEY_MAX_SPEED 4
-#define MOUSEKEY_TIME_TO_MAX 15
-#define MOUSEKEY_WHEEL_DELAY 1
+#define MOUSEKEY_MOVE_DELTA 8
+#define MOUSEKEY_MAX_SPEED 8
+#define MOUSEKEY_TIME_TO_MAX 40
+#define MOUSEKEY_WHEEL_DELAY 10
 #define MOUSEKEY_WHEEL_INTERVAL 16
-#define MOUSEKEY_WHEEL_MAX_SPEED 1
-#define MOUSEKEY_WHEEL_TIME_TO_MAX 30
+#define MOUSEKEY_WHEEL_MAX_SPEED 2
+#define MOUSEKEY_WHEEL_TIME_TO_MAX 80
