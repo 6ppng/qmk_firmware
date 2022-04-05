@@ -24,8 +24,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #define MASTER_RIGHT
 
 /* Tapping settings */
-#define RETRO_TAPPING
-#define TAPPING_TERM 100
+#define TAPPING_TERM 150
 
 /* Mouse speed */
 #define MOUSEKEY_DELAY 10
