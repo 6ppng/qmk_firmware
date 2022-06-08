@@ -128,12 +128,17 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 // #define zkhk_1 LT(1,zkhk)
 #define app_1 LT(1,app)
 #define spc_2 LT(2,spc)
+#define esc_3 LT(3,esc)
+
+enum custom_keycodes {
+  qc = SAFE_RANGE,
+};
 
 
 const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
   [0] = LAYOUT_split_3x6_3(
   //,-----------------------------------------------------.                    ,-----------------------------------------------------.
-          esc,       q,       v,       y,       c,    slsh,                         scln,       g,       h,       m,       j,    quot,
+        esc_3,       q,       v,       y,       c,    slsh,                         scln,       g,       h,       m,       j,    quot,
   //|--------+--------+--------+--------+--------+--------|                    |--------+--------+--------+--------+--------+--------|
      ctl_bspc,       u,       o,       i,       a,       l,                            d,       t,       n,       s,       r, gui_ent,
   //|--------+--------+--------+--------+--------+--------|                    |--------+--------+--------+--------+--------+--------|
@@ -165,5 +170,44 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
   //|--------+--------+--------+--------+--------+--------+--------|  |--------+--------+--------+--------+--------+--------+--------|
                                           _______,    btn1,    btn2,       btn2,    btn1, _______
                                       //`--------------------------'  `--------------------------'
+  ),
+
+  [3] = LAYOUT_split_3x6_3(
+  //,-----------------------------------------------------.                    ,-----------------------------------------------------.
+      XXXXXXX,   TO(4), XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX,                      XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX,
+  //|--------+--------+--------+--------+--------+--------|                    |--------+--------+--------+--------+--------+--------|
+      XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX,                      XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX,
+  //|--------+--------+--------+--------+--------+--------|                    |--------+--------+--------+--------+--------+--------|
+      XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX,                      XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX,
+  //|--------+--------+--------+--------+--------+--------+--------|  |--------+--------+--------+--------+--------+--------+--------|
+                                          XXXXXXX, XXXXXXX, XXXXXXX,    XXXXXXX, XXXXXXX, XXXXXXX
+                                      //`--------------------------'  `--------------------------'
+  ),
+
+  [4] = LAYOUT_split_3x6_3(
+  //,-----------------------------------------------------.                    ,-----------------------------------------------------.
+        TO(0),      qc,      qc,      qc,      qc,      qc,                           qc,      qc,      qc,      qc,      qc,      qc,
+  //|--------+--------+--------+--------+--------+--------|                    |--------+--------+--------+--------+--------+--------|
+           qc,      qc,      qc,      qc,      qc,      qc,                           qc,      qc,      qc,      qc,      qc,      qc,
+  //|--------+--------+--------+--------+--------+--------|                    |--------+--------+--------+--------+--------+--------|
+           qc,      qc,      qc,      qc,      qc,      qc,                           qc,      qc,      qc,      qc,      qc,      qc,
+  //|--------+--------+--------+--------+--------+--------+--------|  |--------+--------+--------+--------+--------+--------+--------|
+                                               qc,      qc,      qc,         qc,      qc,      qc
+                                      //`--------------------------'  `--------------------------'
   )
 };
+
+
+bool process_record_user(uint16_t keycode, keyrecord_t *record) {
+  switch (keycode) {
+    case qc:
+      if (record->event.pressed) {
+        tap_code(btn1);
+      } else {
+        // Do something else when release
+      }
+      return false;
+    default:
+      return true; // Process all other keycodes normally
+  }
+}
