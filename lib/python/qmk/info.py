@@ -8,7 +8,7 @@ from dotty_dict import dotty
 from milc import cli
 
 from qmk.constants import CHIBIOS_PROCESSORS, LUFA_PROCESSORS, VUSB_PROCESSORS
-from qmk.c_parse import find_layouts, parse_config_h_file
+from qmk.c_parse import find_layouts, parse_config_h_file, find_led_config
 from qmk.json_schema import deep_update, json_load, validate
 from qmk.keyboard import config_h, rules_mk
 from qmk.keymap import list_keymaps, locate_keymap
@@ -75,6 +75,9 @@ def info_json(keyboard):
 
     # Ensure that we have matrix row and column counts
     info_data = _matrix_size(info_data)
+
+    # Merge in data from <keyboard.c>
+    info_data = _extract_led_config(info_data, str(keyboard))
 
     # Validate against the jsonschema
     try:
@@ -168,28 +171,46 @@ def _extract_pins(pins):
     return [_pin_name(pin) for pin in pins.split(',')]
 
 
-def _extract_direct_matrix(direct_pins):
+def _extract_2d_array(raw):
+    """Return a 2d array of strings
     """
-    """
-    direct_pin_array = []
+    out_array = []
 
-    while direct_pins[-1] != '}':
-        direct_pins = direct_pins[:-1]
+    while raw[-1] != '}':
+        raw = raw[:-1]
 
-    for row in direct_pins.split('},{'):
+    for row in raw.split('},{'):
         if row.startswith('{'):
             row = row[1:]
 
         if row.endswith('}'):
             row = row[:-1]
 
-        direct_pin_array.append([])
+        out_array.append([])
 
-        for pin in row.split(','):
-            if pin == 'NO_PIN':
-                pin = None
+        for val in row.split(','):
+            out_array[-1].append(val)
 
-            direct_pin_array[-1].append(pin)
+    return out_array
+
+
+def _extract_2d_int_array(raw):
+    """Return a 2d array of ints
+    """
+    ret = _extract_2d_array(raw)
+
+    return [list(map(int, x)) for x in ret]
+
+
+def _extract_direct_matrix(direct_pins):
+    """extract direct_matrix
+    """
+    direct_pin_array = _extract_2d_array(direct_pins)
+
+    for i in range(len(direct_pin_array)):
+        for j in range(len(direct_pin_array[i])):
+            if direct_pin_array[i][j] == 'NO_PIN':
+                direct_pin_array[i][j] = None
 
     return direct_pin_array
 
@@ -205,6 +226,21 @@ def _extract_audio(info_data, config_c):
 
     if audio_pins:
         info_data['audio'] = {'pins': audio_pins}
+
+
+def _extract_secure_unlock(info_data, config_c):
+    """Populate data about the secure unlock sequence
+    """
+    unlock = config_c.get('SECURE_UNLOCK_SEQUENCE', '').replace(' ', '')[1:-1]
+    if unlock:
+        unlock_array = _extract_2d_int_array(unlock)
+        if 'secure' not in info_data:
+            info_data['secure'] = {}
+
+        if 'unlock_sequence' in info_data['secure']:
+            _log_warning(info_data, 'Secure unlock sequence is specified in both config.h (SECURE_UNLOCK_SEQUENCE) and info.json (secure.unlock_sequence) (Value: %s), the config.h value wins.' % info_data['secure']['unlock_sequence'])
+
+        info_data['secure']['unlock_sequence'] = unlock_array
 
 
 def _extract_split_main(info_data, config_c):
@@ -466,6 +502,7 @@ def _extract_config_h(info_data, config_c):
     # Pull data that easily can't be mapped in json
     _extract_matrix_info(info_data, config_c)
     _extract_audio(info_data, config_c)
+    _extract_secure_unlock(info_data, config_c)
     _extract_split_main(info_data, config_c)
     _extract_split_transport(info_data, config_c)
     _extract_split_right_pins(info_data, config_c)
@@ -552,6 +589,46 @@ def _extract_rules_mk(info_data, rules):
 
     # Merge in config values that can't be easily mapped
     _extract_features(info_data, rules)
+
+    return info_data
+
+
+def find_keyboard_c(keyboard):
+    """Find all <keyboard>.c files
+    """
+    keyboard = Path(keyboard)
+    current_path = Path('keyboards/')
+
+    files = []
+    for directory in keyboard.parts:
+        current_path = current_path / directory
+        keyboard_c_path = current_path / f'{directory}.c'
+        if keyboard_c_path.exists():
+            files.append(keyboard_c_path)
+
+    return files
+
+
+def _extract_led_config(info_data, keyboard):
+    """Scan all <keyboard>.c files for led config
+    """
+    cols = info_data['matrix_size']['cols']
+    rows = info_data['matrix_size']['rows']
+
+    # Assume what feature owns g_led_config
+    feature = "rgb_matrix"
+    if info_data.get("features", {}).get("led_matrix", False):
+        feature = "led_matrix"
+
+    # Process
+    for file in find_keyboard_c(keyboard):
+        try:
+            ret = find_led_config(file, cols, rows)
+            if ret:
+                info_data[feature] = info_data.get(feature, {})
+                info_data[feature]["layout"] = ret
+        except Exception as e:
+            _log_warning(info_data, f'led_config: {file.name}: {e}')
 
     return info_data
 
