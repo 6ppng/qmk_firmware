@@ -19,6 +19,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 #include QMK_KEYBOARD_H
 #include <stdio.h>
+#include <stdbool.h>
 
 /* Basic keys */
 #define a KC_A
@@ -65,8 +66,6 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #define quot KC_QUOT
 #define esc KC_ESC
 #define grave KC_GRAVE
-// #define zkhk KC_LNG5
-#define zkhk A(grave)
 #define app KC_APP
 #define undo KC_UNDO
 
@@ -125,15 +124,14 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #define sft_equal SFT_T(equal)
 #define sft_mins SFT_T(mins)
 #define alt_tab ALT_T(tab)
-// #define zkhk_1 LT(1,zkhk)
 #define app_1 LT(1,app)
 #define spc_2 LT(2,spc)
 #define esc_3 LT(3,esc)
 
 enum custom_keycodes {
   qc = SAFE_RANGE,
+  zkhk_1,
 };
-
 
 const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
   [0] = LAYOUT_split_3x6_3(
@@ -144,7 +142,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
   //|--------+--------+--------+--------+--------+--------|                    |--------+--------+--------+--------+--------+--------|
      sft_equal,   comm,     dot,       f,       e,       x,                            b,       k,       w,       z,       p,sft_mins,
   //|--------+--------+--------+--------+--------+--------+--------|  |--------+--------+--------+--------+--------+--------+--------|
-                                          alt_tab,   spc_2,   app_1,       zkhk,   spc_2, alt_tab
+                                          alt_tab,   spc_2,   app_1,     zkhk_1,   spc_2, alt_tab
                                       //`--------------------------'  `--------------------------'
   ),
 
@@ -209,14 +207,38 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
   )
 };
 
+bool is_any_key_tapped_while_zkhk_pressed = false;
+bool is_zkhk_pressed = false;
 
 bool process_record_user(uint16_t keycode, keyrecord_t *record) {
+  if (is_zkhk_pressed && !is_any_key_tapped_while_zkhk_pressed && (keycode != zkhk_1)){
+    is_any_key_tapped_while_zkhk_pressed = true;
+  }
+
   switch (keycode) {
     case qc:
       if (record->event.pressed) {
         tap_code(btn1);
       } else {
         // Do something else when release
+      }
+      return false;
+    case zkhk_1:
+      if (record->event.pressed) {
+        is_zkhk_pressed = true;
+        layer_on(1);
+
+      } else {
+        is_zkhk_pressed = false;
+        layer_off(1);
+
+        if (!is_any_key_tapped_while_zkhk_pressed){
+          bool already_pressed_alt = (get_mods() & MOD_BIT(KC_LALT)) == MOD_BIT(KC_LALT);
+          if (!already_pressed_alt) register_code(KC_LALT);
+          tap_code(KC_GRAVE);
+          if (!already_pressed_alt) unregister_code(KC_LALT);
+        }
+        is_any_key_tapped_while_zkhk_pressed = false;
       }
       return false;
     default:
