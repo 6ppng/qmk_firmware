@@ -19,8 +19,8 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 #pragma once
 
-#define TAPPING_FORCE_HOLD
-#define TAPPING_TERM 100
+// #define TAPPING_FORCE_HOLD
+// #define TAPPING_TERM 100
 
 /* Soft Serial defines */
 #define SOFT_SERIAL_PIN D2
@@ -28,7 +28,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #define SERIAL_MASTER_BUFFER_LENGTH ((MATRIX_ROWS)/2)
 
 /* Select hand configuration */
-#define MASTER_LEFT
+// #define MASTER_LEFT
 // #define MASTER_RIGHT
 // #define EE_HANDS
 
