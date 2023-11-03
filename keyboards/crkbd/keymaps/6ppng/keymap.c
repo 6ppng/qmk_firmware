@@ -127,7 +127,6 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #define app_1 LT(1,app)
 #define spc_2 LT(2,spc)
 #define esc_3 LT(3,esc)
-#define esc_1 LT(1,esc)
 
 enum custom_keycodes {
   qc = SAFE_RANGE,
@@ -191,7 +190,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
   //|--------+--------+--------+--------+--------+--------|                    |--------+--------+--------+--------+--------+--------|
       XXXXXXX, KC_LSFT,       z,       x,       c,       v,                      XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX,
   //|--------+--------+--------+--------+--------+--------+--------|  |--------+--------+--------+--------+--------+--------+--------|
-                                          KC_LALT,  KC_SPC,   esc_1,    XXXXXXX, XXXXXXX, XXXXXXX
+                                          KC_LALT,  KC_SPC,     esc,    XXXXXXX, XXXXXXX, XXXXXXX
                                       //`--------------------------'  `--------------------------'
   ),
 
