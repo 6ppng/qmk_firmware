@@ -172,37 +172,25 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 
   [3] = LAYOUT_split_3x6_3(
   //,-----------------------------------------------------.                    ,-----------------------------------------------------.
-      XXXXXXX,   TO(4),   TO(5), XXXXXXX, XXXXXXX, XXXXXXX,                      XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX,
+      XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX,                      XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX,
   //|--------+--------+--------+--------+--------+--------|                    |--------+--------+--------+--------+--------+--------|
       XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX,                      XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX,
   //|--------+--------+--------+--------+--------+--------|                    |--------+--------+--------+--------+--------+--------|
       XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX,                      XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX,
   //|--------+--------+--------+--------+--------+--------+--------|  |--------+--------+--------+--------+--------+--------+--------|
-                                          XXXXXXX, XXXXXXX, XXXXXXX,    XXXXXXX, XXXXXXX, XXXXXXX
+                                          XXXXXXX, XXXXXXX, XXXXXXX,    XXXXXXX,   TO(4), XXXXXXX
                                       //`--------------------------'  `--------------------------'
   ),
 
   [4] = LAYOUT_split_3x6_3(
   //,-----------------------------------------------------.                    ,-----------------------------------------------------.
-        TO(0),  KC_TAB,       q,       w,       e,       r,                      XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX,
+          esc,  KC_TAB,       q,       w,       e,       r,                      XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX,
   //|--------+--------+--------+--------+--------+--------|                    |--------+--------+--------+--------+--------+--------|
       XXXXXXX, KC_LCTL,       a,       s,       d,       f,                      XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX,
   //|--------+--------+--------+--------+--------+--------|                    |--------+--------+--------+--------+--------+--------|
       XXXXXXX, KC_LSFT,       z,       x,       c,       v,                      XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX,
   //|--------+--------+--------+--------+--------+--------+--------|  |--------+--------+--------+--------+--------+--------+--------|
-                                          KC_LALT,  KC_SPC,     esc,    XXXXXXX, XXXXXXX, XXXXXXX
-                                      //`--------------------------'  `--------------------------'
-  ),
-
-  [5] = LAYOUT_split_3x6_3(
-  //,-----------------------------------------------------.                    ,-----------------------------------------------------.
-        TO(0),      qc,      qc,      qc,      qc,      qc,                           qc,      qc,      qc,      qc,      qc,      qc,
-  //|--------+--------+--------+--------+--------+--------|                    |--------+--------+--------+--------+--------+--------|
-           qc,      qc,      qc,      qc,      qc,      qc,                           qc,      qc,      qc,      qc,      qc,      qc,
-  //|--------+--------+--------+--------+--------+--------|                    |--------+--------+--------+--------+--------+--------|
-           qc,      qc,      qc,      qc,      qc,      qc,                           qc,      qc,      qc,      qc,      qc,      qc,
-  //|--------+--------+--------+--------+--------+--------+--------|  |--------+--------+--------+--------+--------+--------+--------|
-                                               qc,      qc,      qc,         qc,      qc,      qc
+                                          KC_LALT,  KC_SPC, XXXXXXX,    XXXXXXX,   TO(0), XXXXXXX
                                       //`--------------------------'  `--------------------------'
   )
 };
@@ -235,7 +223,9 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
         if (!is_any_key_tapped_while_zkhk_pressed){
           bool already_pressed_alt = (get_mods() & MOD_BIT(KC_LALT)) == MOD_BIT(KC_LALT);
           if (!already_pressed_alt) register_code(KC_LALT);
+          wait_ms(10);
           tap_code(KC_GRAVE);
+          wait_ms(10);
           if (!already_pressed_alt) unregister_code(KC_LALT);
         }
         is_any_key_tapped_while_zkhk_pressed = false;
