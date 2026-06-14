@@ -75,16 +75,16 @@
 #define left KC_LEFT
 
 /* Mouse */
-#define ms_u KC_MS_U
-#define ms_d KC_MS_D
-#define ms_l KC_MS_L
-#define ms_r KC_MS_R
-#define btn1 KC_BTN1
-#define btn2 KC_BTN2
-#define wh_u KC_WH_U
-#define wh_d KC_WH_D
-#define wh_l KC_WH_L
-#define wh_r KC_WH_R
+#define ms_u MS_UP
+#define ms_d MS_DOWN
+#define ms_l MS_LEFT
+#define ms_r MS_RGHT
+#define btn1 MS_BTN1
+#define btn2 MS_BTN2
+#define wh_u MS_WHLU
+#define wh_d MS_WHLD
+#define wh_l MS_WHLL
+#define wh_r MS_WHLR
 
 /* Number */
 #define n0 KC_0
@@ -119,11 +119,11 @@
 #define sft_equal SFT_T(equal)
 #define sft_mins SFT_T(mins)
 #define alt_tab ALT_T(tab)
-#define esc_1 LT(1, esc)
 #define app_1 LT(1, app)
 #define spc_2 LT(2, spc)
 #define esc_3 LT(3, esc)
 #define quot_3 LT(3, quot)
+#define esc_5 LT(5, esc)
 
 enum custom_keycodes {
   qc = SAFE_RANGE,
@@ -171,7 +171,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
   //,-----------------------------------------------------.                    ,-----------------------------------------------------.
       XXXXXXX, QK_BOOT, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX,                      XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, QK_BOOT, XXXXXXX,
   //|--------+--------+--------+--------+--------+--------|                    |--------+--------+--------+--------+--------+--------|
-      XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX,   TO(4), XXXXXXX,                      XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX,
+      XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX,   DF(4), XXXXXXX,                      XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX,
   //|--------+--------+--------+--------+--------+--------|                    |--------+--------+--------+--------+--------+--------|
       XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX,                      XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX,
   //|--------+--------+--------+--------+--------+--------+--------|  |--------+--------+--------+--------+--------+--------+--------|
@@ -181,13 +181,25 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 
   [4] = LAYOUT(
   //,-----------------------------------------------------.                    ,-----------------------------------------------------.
-        TO(0),  KC_TAB,       q,       w,       e,       r,                      XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX,
+        DF(0),  KC_TAB,       q,       w,       e,       r,                      XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX,
   //|--------+--------+--------+--------+--------+--------|                    |--------+--------+--------+--------+--------+--------|
       XXXXXXX, KC_LCTL,       a,       s,       d,       f,                      XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX,
   //|--------+--------+--------+--------+--------+--------|                    |--------+--------+--------+--------+--------+--------|
       XXXXXXX, KC_LSFT,       z,       x,       c,       v,                      XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX,
   //|--------+--------+--------+--------+--------+--------+--------|  |--------+--------+--------+--------+--------+--------+--------|
-      XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, KC_LALT,  KC_SPC,   esc_1,    XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX
+      XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, KC_LALT,  KC_SPC,   esc_5,    XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX
+  //|--------+--------+--------+--------+--------+--------+--------|  |--------+--------+--------+--------+--------+--------+--------|
+  ),
+
+  [5] = LAYOUT(
+  //,-----------------------------------------------------.                    ,-----------------------------------------------------.
+      XXXXXXX, XXXXXXX,      f1,      f2,      f3,     f10,                      XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX,
+  //|--------+--------+--------+--------+--------+--------|                    |--------+--------+--------+--------+--------+--------|
+      XXXXXXX, _______,      f4,      f5,      f6,     f11,                      XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX,
+  //|--------+--------+--------+--------+--------+--------|                    |--------+--------+--------+--------+--------+--------|
+      XXXXXXX, _______,      f7,      f8,      f9,     f12,                      XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX,
+  //|--------+--------+--------+--------+--------+--------+--------|  |--------+--------+--------+--------+--------+--------+--------|
+      XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, _______, XXXXXXX, XXXXXXX,    XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX
   //|--------+--------+--------+--------+--------+--------+--------|  |--------+--------+--------+--------+--------+--------+--------|
   )
 };

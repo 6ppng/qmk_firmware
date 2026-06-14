@@ -1,7 +1,7 @@
+HELIX_ROWS = 4
+
 MOUSEKEY_ENABLE   = yes    # Mouse keys
 LTO_ENABLE        = yes    # if firmware size over limit, try this option
-RGB_MATRIX_ENABLE = no
-RGBLIGHT_ENABLE   = no
 EXTRAKEY_ENABLE   = no     # Audio control and System control
 # AUDIO_ENABLE      = yes     # Audio output
 CONSOLE_ENABLE    = no
