@@ -42,13 +42,12 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
    //#define RGBLIGHT_EFFECT_ALTERNATING
 #endif
 
-
 /* Select hand configuration */
 // #define MASTER_LEFT
 #define MASTER_RIGHT
 
 /* Tapping settings */
-#define TAPPING_TERM 150
+#define TAPPING_TERM 130
 
 /* Mouse speed */
 #define MOUSEKEY_DELAY 10

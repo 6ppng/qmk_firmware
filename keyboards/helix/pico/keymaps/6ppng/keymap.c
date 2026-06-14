@@ -119,10 +119,11 @@
 #define sft_equal SFT_T(equal)
 #define sft_mins SFT_T(mins)
 #define alt_tab ALT_T(tab)
-#define app_1 LT(1,app)
-#define spc_2 LT(2,spc)
-#define esc_3 LT(3,esc)
-#define esc_1 LT(1,esc)
+#define esc_1 LT(1, esc)
+#define app_1 LT(1, app)
+#define spc_2 LT(2, spc)
+#define esc_3 LT(3, esc)
+#define quot_3 LT(3, quot)
 
 enum custom_keycodes {
   qc = SAFE_RANGE,
@@ -132,7 +133,7 @@ enum custom_keycodes {
 const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
   [0] = LAYOUT(
   //,-----------------------------------------------------.                    ,-----------------------------------------------------.
-        esc_3,       q,       v,       y,       c,    slsh,                         scln,       g,       h,       m,       j,    quot,
+        esc_3,       q,       v,       y,       c,    slsh,                         scln,       g,       h,       m,       j,  quot_3,
   //|--------+--------+--------+--------+--------+--------|                    |--------+--------+--------+--------+--------+--------|
      ctl_bspc,       u,       o,       i,       a,       l,                            d,       t,       n,       s,       r, gui_ent,
   //|--------+--------+--------+--------+--------+--------|                    |--------+--------+--------+--------+--------+--------|
@@ -168,9 +169,9 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 
   [3] = LAYOUT(
   //,-----------------------------------------------------.                    ,-----------------------------------------------------.
-      XXXXXXX,   TO(4),   TO(5), XXXXXXX, XXXXXXX, XXXXXXX,                      XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX,
+      XXXXXXX, QK_BOOT, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX,                      XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, QK_BOOT, XXXXXXX,
   //|--------+--------+--------+--------+--------+--------|                    |--------+--------+--------+--------+--------+--------|
-      XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX,                      XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX,
+      XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX,   TO(4), XXXXXXX,                      XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX,
   //|--------+--------+--------+--------+--------+--------|                    |--------+--------+--------+--------+--------+--------|
       XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX,                      XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX,
   //|--------+--------+--------+--------+--------+--------+--------|  |--------+--------+--------+--------+--------+--------+--------|
@@ -188,18 +189,6 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
   //|--------+--------+--------+--------+--------+--------+--------|  |--------+--------+--------+--------+--------+--------+--------|
       XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, KC_LALT,  KC_SPC,   esc_1,    XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX
   //|--------+--------+--------+--------+--------+--------+--------|  |--------+--------+--------+--------+--------+--------+--------|
-  ),
-
-  [5] = LAYOUT(
-  //,-----------------------------------------------------.                    ,-----------------------------------------------------.
-        TO(0),      qc,      qc,      qc,      qc,      qc,                           qc,      qc,      qc,      qc,      qc,      qc,
-  //|--------+--------+--------+--------+--------+--------|                    |--------+--------+--------+--------+--------+--------|
-           qc,      qc,      qc,      qc,      qc,      qc,                           qc,      qc,      qc,      qc,      qc,      qc,
-  //|--------+--------+--------+--------+--------+--------|                    |--------+--------+--------+--------+--------+--------|
-           qc,      qc,      qc,      qc,      qc,      qc,                           qc,      qc,      qc,      qc,      qc,      qc,
-  //|--------+--------+--------+--------+--------+--------+--------|  |--------+--------+--------+--------+--------+--------+--------|
-      XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX,      qc,      qc,      qc,         qc,      qc,      qc, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX
-  //|--------+--------+--------+--------+--------+--------+--------|  |--------+--------+--------+--------+--------+--------+--------|
   )
 };
 
@@ -212,33 +201,26 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
   }
 
   switch (keycode) {
-    case qc:
-      if (record->event.pressed) {
-        tap_code(btn1);
-      } else {
-        // Do something else when release
-      }
-      return false;
     case zkhk_1:
       if (record->event.pressed) {
         is_zkhk_pressed = true;
         layer_on(1);
-
       } else {
         is_zkhk_pressed = false;
         layer_off(1);
-
         if (!is_any_key_tapped_while_zkhk_pressed){
           bool already_pressed_alt = (get_mods() & MOD_BIT(KC_LALT)) == MOD_BIT(KC_LALT);
           if (!already_pressed_alt) register_code(KC_LALT);
+          wait_ms(10);
           tap_code(KC_GRAVE);
+          wait_ms(10);
           if (!already_pressed_alt) unregister_code(KC_LALT);
         }
         is_any_key_tapped_while_zkhk_pressed = false;
       }
       return false;
+
     default:
       return true; // Process all other keycodes normally
   }
 }
-
