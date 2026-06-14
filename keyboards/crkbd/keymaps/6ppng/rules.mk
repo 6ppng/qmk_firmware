@@ -1,2 +1,7 @@
-MOUSEKEY_ENABLE = yes    # Mouse keys
-LTO_ENABLE      = yes
+MOUSEKEY_ENABLE   = yes
+LTO_ENABLE        = yes
+RGB_MATRIX_ENABLE = no
+RGBLIGHT_ENABLE   = no
+EXTRAKEY_ENABLE   = no
+CONSOLE_ENABLE    = no
+COMMAND_ENABLE    = no
